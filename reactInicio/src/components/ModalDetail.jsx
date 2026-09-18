@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
+import { getEpisodeByUrl } from '../services/rickAndMortyApi';
 
 export const ModalDetail = ({ character, onClose }) => {
   const [firstEpisodeName, setFirstEpisodeName] = useState('');
 
-  // 1. Sincronizamos la URL del episodio cuando cambia el personaje sin usar setState directo
   const targetEpisode = character?.episode?.[0] || '';
 
   useEffect(() => {
@@ -11,8 +11,7 @@ export const ModalDetail = ({ character, onClose }) => {
 
     if (!targetEpisode) return;
 
-    fetch(targetEpisode)
-      .then((res) => res.json())
+    getEpisodeByUrl(targetEpisode)
       .then((data) => {
         if (isMounted) {
           setFirstEpisodeName(data.name);

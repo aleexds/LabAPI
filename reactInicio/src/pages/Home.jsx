@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { getCharacters } from '../services/rickAndMortyApi';
 import { CharacterCard } from '../components/CharacterCard';
 import { SearchBar } from '../components/SearchBar';
 import { Pagination } from '../components/Pagination';
@@ -18,9 +19,7 @@ export const Home = () => {
       setLoading(true);
       setError(null);
       try {
-        const res = await fetch(`https://rickandmortyapi.com/api/character/?page=${page}&name=${search}`);
-        if (!res.ok) throw new Error('No se encontraron personajes');
-        const data = await res.json();
+        const data = await getCharacters(page, search);
         setCharacters(data.results);
         setInfo(data.info);
       } catch (err) {
