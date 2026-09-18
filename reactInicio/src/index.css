@@ -15,14 +15,13 @@ body {
   color: #ffffff;
   font-family: 'Montserrat', sans-serif;
   min-height: 100vh;
-  /* Fondo estilo espacio con portal interdimensional */
   background-image: 
     radial-gradient(circle at 50% 30%, rgba(0, 255, 136, 0.25) 0%, rgba(157, 78, 221, 0.15) 35%, transparent 70%),
     radial-gradient(circle at 20% 80%, rgba(166, 255, 0, 0.1) 0%, transparent 40%);
   background-attachment: fixed;
 }
 
-/* Título con estilo de rótulo llamativo y neón */
+/* Título con resplandor neón animado */
 .title-rick {
   font-family: 'Creepster', cursive;
   font-size: 3.2rem;
@@ -34,22 +33,100 @@ body {
     0 0 40px var(--portal-green);
   margin-bottom: 10px;
   text-align: center;
+  animation: titleGlow 3s infinite alternate ease-in-out;
 }
 
-/* Efecto Hover en las Tarjetas */
+@keyframes titleGlow {
+  0% {
+    text-shadow: 0 0 10px var(--neon-green), 0 0 20px var(--neon-green);
+  }
+  100% {
+    text-shadow: 0 0 20px var(--neon-green), 0 0 35px var(--portal-green), 0 0 50px var(--neon-green);
+  }
+}
+
+/* 🎨 Animaciones para las Tarjetas al cargar o filtrar */
 .character-card {
   background: var(--card-bg);
   border: 2px solid var(--neon-purple);
   border-radius: 14px;
   padding: 14px;
   text-align: center;
-  transition: all 0.3s ease-in-out;
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), 
+              border-color 0.3s ease, 
+              box-shadow 0.3s ease;
   backdrop-filter: blur(5px);
   cursor: pointer;
+  animation: cardFadeIn 0.5s ease-out forwards;
 }
 
 .character-card:hover {
-  transform: translateY(-8px) scale(1.02);
+  transform: translateY(-8px) scale(1.03);
   border-color: var(--neon-green);
-  box-shadow: 0 0 20px rgba(0, 255, 136, 0.6);
+  box-shadow: 0 0 25px rgba(0, 255, 136, 0.6);
+}
+
+@keyframes cardFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* 🌀 Animación para el Overlay e interior del Modal de Detalles */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(11, 3, 20, 0.85);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: overlayFadeIn 0.3s ease-out;
+}
+
+.modal-content {
+  background: var(--card-bg);
+  border: 2px solid var(--neon-green);
+  border-radius: 16px;
+  width: 90%;
+  max-width: 600px;
+  padding: 24px;
+  box-shadow: 0 0 30px rgba(0, 255, 136, 0.4);
+  position: relative;
+  animation: modalPopIn 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes overlayFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes modalPopIn {
+  from {
+    opacity: 0;
+    transform: scale(0.8) translateY(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* Animación de carga para el mensaje del portal */
+.loading-portal {
+  animation: pulseGlow 1.5s infinite alternate;
+}
+
+@keyframes pulseGlow {
+  from { opacity: 0.5; transform: scale(0.98); }
+  to { opacity: 1; transform: scale(1.02); }
 }

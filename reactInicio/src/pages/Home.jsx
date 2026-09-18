@@ -6,8 +6,8 @@ import { FilterBar } from '../components/FilterBar';
 import { Pagination } from '../components/Pagination';
 import { ModalDetail } from '../components/ModalDetail';
 import { PortalBackground } from '../components/PortalBackground';
-import { FavoritesModal } from '../components/FavoritesModal'; // 👈 Import de Favoritos
-import { useFavorites } from '../context/FavoritesContext';
+import { FavoritesModal } from '../components/FavoritesModal';
+import { useFavorites } from '../context/useFavorites';
 
 export const Home = () => {
   const [characters, setCharacters] = useState([]);
@@ -19,7 +19,7 @@ export const Home = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [selectedCharacter, setSelectedCharacter] = useState(null);
-  const [isFavoritesOpen, setIsFavoritesOpen] = useState(false); // 👈 Control del modal
+  const [isFavoritesOpen, setIsFavoritesOpen] = useState(false);
 
   const { favorites } = useFavorites();
 
@@ -52,7 +52,6 @@ export const Home = () => {
       <PortalBackground />
 
       <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '10px' }}>
-        {/* Botón para ver Lista de Favoritos */}
         <button
           onClick={() => setIsFavoritesOpen(true)}
           style={{
@@ -64,7 +63,7 @@ export const Home = () => {
             fontWeight: 'bold',
             cursor: 'pointer',
             boxShadow: '0 0 10px rgba(255, 51, 102, 0.4)',
-            transition: 'transform 0.2s ease'
+            transition: 'all 0.2s ease'
           }}
         >
           ❤️ Favoritos ({favorites.length})
@@ -85,7 +84,7 @@ export const Home = () => {
       />
 
       {loading && (
-        <p style={{ color: 'var(--neon-green)', textAlign: 'center', fontSize: '1.2rem' }}>
+        <p className="loading-portal" style={{ color: 'var(--neon-green)', textAlign: 'center', fontSize: '1.2rem' }}>
           🌀 Abriendo portal interdimensional...
         </p>
       )}
@@ -96,13 +95,17 @@ export const Home = () => {
         </p>
       )}
 
-      <div style={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))',
-        gap: '24px',
-        margin: '30px 0'
-      }}>
-        {characters.map(char => (
+      {/* La key dinámica activa la animación cardFadeIn al cambiar filtros */}
+      <div 
+        key={`${page}-${search}-${status}-${species}`}
+        style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))',
+          gap: '24px',
+          margin: '30px 0'
+        }}
+      >
+        {characters.map((char) => (
           <CharacterCard key={char.id} character={char} onSelect={setSelectedCharacter} />
         ))}
       </div>
@@ -111,7 +114,6 @@ export const Home = () => {
       
       <ModalDetail character={selectedCharacter} onClose={() => setSelectedCharacter(null)} />
       
-      {/* Modal para ver Favoritos */}
       <FavoritesModal 
         isOpen={isFavoritesOpen} 
         onClose={() => setIsFavoritesOpen(false)} 
