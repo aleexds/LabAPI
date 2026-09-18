@@ -1,90 +1,122 @@
 @import url('https://fonts.googleapis.com/css2?family=Creepster&family=Montserrat:wght@400;600;800&display=swap');
 
-:root {
+/* 🌌 Modo Oscuro (Espacio Profundo) */
+:root, [data-theme="dark"] {
   --neon-green: #00ff88;
   --portal-green: #a6ff00;
   --neon-purple: #9d4edd;
-  --dark-bg: #0b0314;
+  --bg-color: #0b0314;
   --card-bg: rgba(26, 9, 51, 0.85);
+  --text-primary: #ffffff;
+  --text-secondary: #b8c0ec;
+  --border-color: #9d4edd;
+  --glow-color: rgba(0, 255, 136, 0.6);
+  --input-bg: rgba(26, 9, 51, 0.9);
+  --bg-gradient: radial-gradient(circle at 50% 30%, rgba(0, 255, 136, 0.25) 0%, rgba(157, 78, 221, 0.15) 35%, transparent 70%);
+}
+
+/* 🧪 Modo Claro (Laboratorio C-137 / Citadel) */
+[data-theme="light"] {
+  --neon-green: #008f4c;
+  --portal-green: #528c00;
+  --neon-purple: #6a0ba8;
+  --bg-color: #d8e2ec;
+  --card-bg: #ffffff;
+  --text-primary: #0f051d;       /* 👈 Texto oscuro para máxima legibilidad */
+  --text-secondary: #4a4e69;     /* 👈 Especie legible */
+  --border-color: #00c853;
+  --glow-color: rgba(0, 200, 83, 0.4);
+  --input-bg: #ffffff;
+  --bg-gradient: radial-gradient(circle at 50% 30%, rgba(0, 255, 136, 0.3) 0%, rgba(187, 222, 251, 0.5) 50%, #d8e2ec 80%);
 }
 
 body {
   margin: 0;
   padding: 0;
-  background-color: var(--dark-bg);
-  color: #ffffff;
+  background-color: var(--bg-color);
+  color: var(--text-primary);
   font-family: 'Montserrat', sans-serif;
   min-height: 100vh;
-  background-image: 
-    radial-gradient(circle at 50% 30%, rgba(0, 255, 136, 0.25) 0%, rgba(157, 78, 221, 0.15) 35%, transparent 70%),
-    radial-gradient(circle at 20% 80%, rgba(166, 255, 0, 0.1) 0%, transparent 40%);
+  background-image: var(--bg-gradient);
   background-attachment: fixed;
+  transition: background-color 0.4s ease, color 0.4s ease;
 }
 
-/* Título con resplandor neón animado */
+/* Título */
 .title-rick {
   font-family: 'Creepster', cursive;
   font-size: 3.2rem;
   letter-spacing: 3px;
   color: var(--neon-green);
-  text-shadow: 
-    0 0 10px var(--neon-green),
-    0 0 20px var(--neon-green),
-    0 0 40px var(--portal-green);
+  text-shadow: 0 0 10px var(--neon-green), 0 0 20px var(--neon-green);
   margin-bottom: 10px;
   text-align: center;
   animation: titleGlow 3s infinite alternate ease-in-out;
 }
 
 @keyframes titleGlow {
-  0% {
-    text-shadow: 0 0 10px var(--neon-green), 0 0 20px var(--neon-green);
-  }
-  100% {
-    text-shadow: 0 0 20px var(--neon-green), 0 0 35px var(--portal-green), 0 0 50px var(--neon-green);
-  }
+  0% { text-shadow: 0 0 10px var(--neon-green), 0 0 20px var(--neon-green); }
+  100% { text-shadow: 0 0 20px var(--neon-green), 0 0 35px var(--portal-green); }
 }
 
-/* 🎨 Animaciones para las Tarjetas al cargar o filtrar */
+/* Tarjetas con adaptación de texto según modo */
 .character-card {
   background: var(--card-bg);
-  border: 2px solid var(--neon-purple);
+  border: 2px solid var(--border-color);
   border-radius: 14px;
   padding: 14px;
   text-align: center;
   transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), 
               border-color 0.3s ease, 
-              box-shadow 0.3s ease;
+              box-shadow 0.3s ease,
+              background-color 0.4s ease;
   backdrop-filter: blur(5px);
   cursor: pointer;
   animation: cardFadeIn 0.5s ease-out forwards;
 }
 
+.character-card h3 {
+  color: var(--text-primary) !important; /* 👈 Hereda el color activo */
+  margin: 12px 0 6px;
+  font-size: 1.1rem;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.character-card p {
+  color: var(--text-secondary) !important; /* 👈 Hereda el color secundario */
+  margin: 0;
+  font-size: 0.85rem;
+}
+
 .character-card:hover {
   transform: translateY(-8px) scale(1.03);
   border-color: var(--neon-green);
-  box-shadow: 0 0 25px rgba(0, 255, 136, 0.6);
+  box-shadow: 0 0 25px var(--glow-color);
+}
+
+/* Ajustes de Selects e Inputs */
+select, input {
+  background-color: var(--input-bg) !important;
+  color: var(--text-primary) !important;
+  border: 2px solid var(--border-color) !important;
+  box-shadow: 0 0 10px var(--glow-color);
 }
 
 @keyframes cardFadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(20px) scale(0.95);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
+  from { opacity: 0; transform: translateY(20px) scale(0.95); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
 }
 
-/* 🌀 Animación para el Overlay e interior del Modal de Detalles */
+/* Modal */
 .modal-overlay {
   position: fixed;
   top: 0;
   left: 0;
   width: 100vw;
   height: 100vh;
-  background-color: rgba(11, 3, 20, 0.85);
+  background-color: rgba(11, 3, 20, 0.8);
   backdrop-filter: blur(8px);
   display: flex;
   align-items: center;
@@ -100,28 +132,18 @@ body {
   width: 90%;
   max-width: 600px;
   padding: 24px;
-  box-shadow: 0 0 30px rgba(0, 255, 136, 0.4);
+  color: var(--text-primary);
+  box-shadow: 0 0 30px var(--glow-color);
   position: relative;
   animation: modalPopIn 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
-@keyframes overlayFadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
+@keyframes overlayFadeIn { from { opacity: 0; } to { opacity: 1; } }
 @keyframes modalPopIn {
-  from {
-    opacity: 0;
-    transform: scale(0.8) translateY(-30px);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1) translateY(0);
-  }
+  from { opacity: 0; transform: scale(0.8) translateY(-30px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
 }
 
-/* Animación de carga para el mensaje del portal */
 .loading-portal {
   animation: pulseGlow 1.5s infinite alternate;
 }
