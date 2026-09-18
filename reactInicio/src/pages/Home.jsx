@@ -7,7 +7,7 @@ import { Pagination } from '../components/Pagination';
 import { ModalDetail } from '../components/ModalDetail';
 import { PortalBackground } from '../components/PortalBackground';
 import { FavoritesModal } from '../components/FavoritesModal';
-import { useFavorites } from '../context/useFavorites';
+import { useFavorites } from '../context/FavoritesContext';
 
 export const Home = () => {
   const [characters, setCharacters] = useState([]);
