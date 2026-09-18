@@ -7,6 +7,7 @@ import { Pagination } from '../components/Pagination';
 import { ModalDetail } from '../components/ModalDetail';
 import { PortalBackground } from '../components/PortalBackground';
 import { FavoritesModal } from '../components/FavoritesModal';
+import { ThemeToggle } from '../components/ThemeToggle'; // 👈 Import del conmutador de tema
 import { useFavorites } from '../context/FavoritesContext';
 
 export const Home = () => {
@@ -51,15 +52,18 @@ export const Home = () => {
     <div style={{ padding: '30px 20px', maxWidth: '1200px', margin: '0 auto', position: 'relative' }}>
       <PortalBackground />
 
-      <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '10px' }}>
+      {/* Barra de Controles Superiores */}
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '15px' }}>
+        <ThemeToggle />
+
         <button
           onClick={() => setIsFavoritesOpen(true)}
           style={{
             padding: '10px 18px',
             borderRadius: '20px',
             border: '2px solid #ff3366',
-            background: 'rgba(26, 9, 51, 0.9)',
-            color: '#fff',
+            background: 'var(--card-bg)',
+            color: 'var(--text-primary)',
             fontWeight: 'bold',
             cursor: 'pointer',
             boxShadow: '0 0 10px rgba(255, 51, 102, 0.4)',
@@ -95,7 +99,6 @@ export const Home = () => {
         </p>
       )}
 
-      {/* La key dinámica activa la animación cardFadeIn al cambiar filtros */}
       <div 
         key={`${page}-${search}-${status}-${species}`}
         style={{
