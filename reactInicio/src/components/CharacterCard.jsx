@@ -1,5 +1,10 @@
+
+import { useFavorites } from '../context/useFavorites';
+
 export const CharacterCard = ({ character, onSelect }) => {
-  // Configuración de colores e íconos por estado
+  const { toggleFavorite, isFavorite } = useFavorites();
+  const favorite = isFavorite(character.id);
+
   const statusConfig = {
     Alive: { color: '#00ff88', icon: '🟢', label: 'Vivo' },
     Dead: { color: '#ff3366', icon: '💀', label: 'Muerto' },
@@ -7,6 +12,11 @@ export const CharacterCard = ({ character, onSelect }) => {
   };
 
   const currentStatus = statusConfig[character.status] || statusConfig.unknown;
+
+  const handleFavoriteClick = (e) => {
+    e.stopPropagation(); // Evita abrir el modal de detalles al dar clic al corazón
+    toggleFavorite(character);
+  };
 
   return (
     <div className="character-card" onClick={() => onSelect(character)}>
@@ -20,7 +30,8 @@ export const CharacterCard = ({ character, onSelect }) => {
             border: '2px solid rgba(157, 78, 221, 0.4)' 
           }} 
         />
-        {/* Badge de Estado con ícono */}
+        
+        {/* Badge de Estado */}
         <span style={{
           position: 'absolute',
           top: '10px',
@@ -36,6 +47,31 @@ export const CharacterCard = ({ character, onSelect }) => {
         }}>
           {currentStatus.icon} {currentStatus.label}
         </span>
+
+        {/* Botón de Favorito */}
+        <button
+          onClick={handleFavoriteClick}
+          title={favorite ? 'Quitar de favoritos' : 'Agregar a favoritos'}
+          style={{
+            position: 'absolute',
+            bottom: '10px',
+            left: '10px',
+            background: 'rgba(11, 3, 20, 0.85)',
+            border: favorite ? '1px solid #ff3366' : '1px solid var(--neon-purple)',
+            borderRadius: '50%',
+            width: '36px',
+            height: '36px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            cursor: 'pointer',
+            fontSize: '1.2rem',
+            backdropFilter: 'blur(4px)',
+            transition: 'transform 0.2s ease'
+          }}
+        >
+          {favorite ? '❤️' : '🤍'}
+        </button>
       </div>
 
       <h3 style={{ 

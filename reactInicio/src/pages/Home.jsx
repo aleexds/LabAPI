@@ -2,21 +2,26 @@ import { useState, useEffect } from 'react';
 import { getCharacters } from '../services/rickAndMortyApi';
 import { CharacterCard } from '../components/CharacterCard';
 import { SearchBar } from '../components/SearchBar';
-import { FilterBar } from '../components/FilterBar'; // 👈 Importamos los filtros
+import { FilterBar } from '../components/FilterBar';
 import { Pagination } from '../components/Pagination';
 import { ModalDetail } from '../components/ModalDetail';
 import { PortalBackground } from '../components/PortalBackground';
+import { FavoritesModal } from '../components/FavoritesModal'; // 👈 Import de Favoritos
+import { useFavorites } from '../context/FavoritesContext';
 
 export const Home = () => {
   const [characters, setCharacters] = useState([]);
   const [info, setInfo] = useState({});
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState('');
-  const [status, setStatus] = useState(''); // 👈 Estado de filtro
-  const [species, setSpecies] = useState(''); // 👈 Estado de filtro
+  const [status, setStatus] = useState('');
+  const [species, setSpecies] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [selectedCharacter, setSelectedCharacter] = useState(null);
+  const [isFavoritesOpen, setIsFavoritesOpen] = useState(false); // 👈 Control del modal
+
+  const { favorites } = useFavorites();
 
   useEffect(() => {
     const fetchCharacters = async () => {
@@ -35,16 +40,36 @@ export const Home = () => {
     };
 
     fetchCharacters();
-  }, [page, search, status, species]); // 👈 Re-ejecuta al cambiar cualquier filtro
+  }, [page, search, status, species]);
 
   const handleFilterChange = (setter) => (val) => {
     setter(val);
-    setPage(1); // Reinicia a la página 1 cuando se aplique un filtro
+    setPage(1);
   };
 
   return (
     <div style={{ padding: '30px 20px', maxWidth: '1200px', margin: '0 auto', position: 'relative' }}>
-      <PortalBackground /> 
+      <PortalBackground />
+
+      <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '10px' }}>
+        {/* Botón para ver Lista de Favoritos */}
+        <button
+          onClick={() => setIsFavoritesOpen(true)}
+          style={{
+            padding: '10px 18px',
+            borderRadius: '20px',
+            border: '2px solid #ff3366',
+            background: 'rgba(26, 9, 51, 0.9)',
+            color: '#fff',
+            fontWeight: 'bold',
+            cursor: 'pointer',
+            boxShadow: '0 0 10px rgba(255, 51, 102, 0.4)',
+            transition: 'transform 0.2s ease'
+          }}
+        >
+          ❤️ Favoritos ({favorites.length})
+        </button>
+      </div>
 
       <h1 className="title-rick">Rick & Morty Multiverse</h1>
       
@@ -52,7 +77,6 @@ export const Home = () => {
         <SearchBar search={search} setSearch={handleFilterChange(setSearch)} />
       </div>
 
-      {/* Barra de Filtros por Estado y Especie */}
       <FilterBar 
         status={status} 
         setStatus={handleFilterChange(setStatus)} 
@@ -84,7 +108,15 @@ export const Home = () => {
       </div>
 
       {!loading && !error && <Pagination page={page} setPage={setPage} info={info} />}
+      
       <ModalDetail character={selectedCharacter} onClose={() => setSelectedCharacter(null)} />
+      
+      {/* Modal para ver Favoritos */}
+      <FavoritesModal 
+        isOpen={isFavoritesOpen} 
+        onClose={() => setIsFavoritesOpen(false)} 
+        onSelectCharacter={setSelectedCharacter} 
+      />
     </div>
   );
 };
