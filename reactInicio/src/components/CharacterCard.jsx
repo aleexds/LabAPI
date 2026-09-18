@@ -1,5 +1,5 @@
 
-import { useFavorites } from '../context/useFavorites';
+import { useFavorites } from '../context/FavoritesContext';
 
 export const CharacterCard = ({ character, onSelect }) => {
   const { toggleFavorite, isFavorite } = useFavorites();
