@@ -1,14 +1,19 @@
 import { useState, useEffect } from 'react';
+import { getCharacters } from '../services/rickAndMortyApi';
 import { CharacterCard } from '../components/CharacterCard';
 import { SearchBar } from '../components/SearchBar';
+import { FilterBar } from '../components/FilterBar'; // 👈 Importamos los filtros
 import { Pagination } from '../components/Pagination';
 import { ModalDetail } from '../components/ModalDetail';
+import { PortalBackground } from '../components/PortalBackground';
 
 export const Home = () => {
   const [characters, setCharacters] = useState([]);
   const [info, setInfo] = useState({});
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState('');
+  const [status, setStatus] = useState(''); // 👈 Estado de filtro
+  const [species, setSpecies] = useState(''); // 👈 Estado de filtro
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [selectedCharacter, setSelectedCharacter] = useState(null);
@@ -18,9 +23,7 @@ export const Home = () => {
       setLoading(true);
       setError(null);
       try {
-        const res = await fetch(`https://rickandmortyapi.com/api/character/?page=${page}&name=${search}`);
-        if (!res.ok) throw new Error('No se encontraron personajes');
-        const data = await res.json();
+        const data = await getCharacters(page, search, status, species);
         setCharacters(data.results);
         setInfo(data.info);
       } catch (err) {
@@ -32,26 +35,48 @@ export const Home = () => {
     };
 
     fetchCharacters();
-  }, [page, search]);
+  }, [page, search, status, species]); // 👈 Re-ejecuta al cambiar cualquier filtro
+
+  const handleFilterChange = (setter) => (val) => {
+    setter(val);
+    setPage(1); // Reinicia a la página 1 cuando se aplique un filtro
+  };
 
   return (
-    <div style={{ minHeight: '100vh', background: '#0f0c20', padding: '20px', fontFamily: 'sans-serif' }}>
-      <h1 style={{ color: '#00ffcc', textAlign: 'center', textShadow: '0 0 10px #00ffcc' }}>
-        Rick & Morty Explorer
-      </h1>
+    <div style={{ padding: '30px 20px', maxWidth: '1200px', margin: '0 auto', position: 'relative' }}>
+      <PortalBackground />
+
+      <h1 className="title-rick">Rick & Morty Multiverse</h1>
+      
       <div style={{ display: 'flex', justifyContent: 'center' }}>
-        <SearchBar search={search} setSearch={(val) => { setSearch(val); setPage(1); }} />
+        <SearchBar search={search} setSearch={handleFilterChange(setSearch)} />
       </div>
 
-      {loading && <p style={{ color: '#00ffcc', textAlign: 'center' }}>Cargando portal...</p>}
-      {error && <p style={{ color: '#ff4d4d', textAlign: 'center' }}>{error}</p>}
+      {/* Barra de Filtros por Estado y Especie */}
+      <FilterBar 
+        status={status} 
+        setStatus={handleFilterChange(setStatus)} 
+        species={species} 
+        setSpecies={handleFilterChange(setSpecies)} 
+      />
+
+      {loading && (
+        <p style={{ color: 'var(--neon-green)', textAlign: 'center', fontSize: '1.2rem' }}>
+          🌀 Abriendo portal interdimensional...
+        </p>
+      )}
+
+      {error && (
+        <p style={{ color: '#ff3366', textAlign: 'center', fontSize: '1.1rem' }}>
+          ⚠️ {error}
+        </p>
+      )}
 
       <div style={{
         display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))',
-        gap: '20px',
-        maxWidth: '1200px',
-        margin: '0 auto'
+        gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))',
+        gap: '24px',
+        margin: '30px 0'
       }}>
         {characters.map(char => (
           <CharacterCard key={char.id} character={char} onSelect={setSelectedCharacter} />
